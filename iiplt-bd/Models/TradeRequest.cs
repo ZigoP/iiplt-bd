@@ -1,9 +1,13 @@
-﻿namespace iiplt_bd.Models
+﻿using System.ComponentModel;
+
+namespace iiplt_bd.Models
 {
     public enum TradeType
     {
-        BUY,
-        SELL
+        [Description("BUY")]
+        BUY = 1,
+        [Description("SELL")]
+        SELL = 2
     }
 
     public class TradeRequest

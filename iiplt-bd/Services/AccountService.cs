@@ -38,7 +38,7 @@ namespace iiplt_bd.Services
                 if (_account.Balance >= totalCost)
                 {
                     _account.Balance -= totalCost;
-                    _account.AddStock(request.ISIN, request.Quantity);
+                    _account.AddStock(request.ISIN, request.Quantity, Stocks);  
                     SaveAccountState();
                     return (true, "Purchase successful", _account);
                 }
@@ -50,7 +50,7 @@ namespace iiplt_bd.Services
                 {
                     var totalValue = request.Quantity * stock.Price;
                     _account.Balance += totalValue;
-                    _account.SellStock(request.ISIN, request.Quantity);
+                    _account.SellStock(request.ISIN, request.Quantity, stock.Price);
                     SaveAccountState();
                     return (true, "Sale successful", _account);
                 }
@@ -60,20 +60,36 @@ namespace iiplt_bd.Services
             return (false, "Invalid trade type", _account);
         }
 
+
         private AccountState LoadAccountState()
         {
-            if (File.Exists(FilePath))
+            try
             {
-                var json = File.ReadAllText(FilePath);
-                return JsonSerializer.Deserialize<AccountState>(json) ?? new AccountState();
+                if (File.Exists(FilePath))
+                {
+                    var json = File.ReadAllText(FilePath);
+                    return JsonSerializer.Deserialize<AccountState>(json) ?? new AccountState();
+                }
             }
-            return new AccountState();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading account state: {ex.Message}");
+            }
+            return new AccountState(); 
         }
+
 
         private void SaveAccountState()
         {
-            var json = JsonSerializer.Serialize(_account, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(FilePath, json);
+            try
+            {
+                var json = JsonSerializer.Serialize(_account, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(FilePath, json);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving account state: {ex.Message}");
+            }
         }
     }
 }
