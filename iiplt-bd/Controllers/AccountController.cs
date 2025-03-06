@@ -33,6 +33,6 @@ public class AccountController : ControllerBase
         if (result.Success)
             return Ok(new { message = result.Message, account = result.Account });
 
-        return BadRequest(result.Message);
+        return BadRequest(new { message = result.Message });
     }
 }
