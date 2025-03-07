@@ -7,7 +7,6 @@ namespace iiplt_bd.Models
     {
         public decimal Balance { get; set; } = 10000;
         public List<OwnedStock> Portfolio { get; set; } = new();
-
         public void AddStock(string isin, int quantity, List<Stock> stocks)
         {
             var stock = stocks.FirstOrDefault(s => s.ISIN == isin);
